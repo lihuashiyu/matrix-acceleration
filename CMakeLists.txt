@@ -1,8 +1,8 @@
 # 00. 设置编译类型参数
-set(COMPILE_TYPE 0)                                                            # 1：静态库，2：动态库，其它：可执行文件
+set(COMPILE_TYPE 1)                                                            # 1：静态库，2：动态库，其它：可执行文件
 
 # 01. 指定 cmake 最小版本
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.15)
 
 # 02. 设置环境变量，编译用到的源文件全部都要放到这里，否则编译能够通过，但是执行的时候会出现各种问题
 set(CMAKE_CXX_STANDARD 14)
@@ -12,16 +12,17 @@ set(CMAKE_CUDA_STANDARD 14)
 project(matrix-acceleration CUDA)
 
 # 04. 源码文件存放目录
-#aux_source_directory(${PROJECT_SOURCE_DIR}/src SRC_LIST)
-aux_source_directory("${PROJECT_SOURCE_DIR}/src" SRC_LIST)
+file(GLOB_RECURSE  source_list "src/*/*.cu")                                   # 获取所有的头文件
+file(GLOB_RECURSE  header_list "src/*/*.cuh")                                  # 获取所有的源文件
+set(src_list ${source_list} ${header_list})                                    # 拼接变量
 
 # 05. 设置编译类型
 if("${COMPILE_TYPE}" STREQUAL "1")
-    add_library(matrix-acceleration  STATIC  ${SRC_LIST})                      # 编译为静态库
+    add_library(matrix-acceleration  STATIC  ${src_list})                      # 编译为静态库
 elseif("${COMPILE_TYPE}" STREQUAL "2")
-    add_library(matrix-acceleration  SHARED  ${SRC_LIST})                      # 编译为动态链接库
+    add_library(matrix-acceleration  SHARED  ${src_list})                      # 编译为动态链接库
 else()
-    add_executable(matrix-acceleration ${SRC_LIST})                            # 编译为可执行程序
+    add_executable(matrix-acceleration "src/main.cu" "${src_list}")            # 编译为可执行程序
 endif()
 
 # 06. 编译输出路径的设置
@@ -34,7 +35,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/out/exe)              #
 
 # 07. 引用的头文件目录
 set(INCLUDE_PATH ${PROJECT_SOURCE_DIR}/include)
-include_directories($ENV{INCLUDE_PATH})
+include_directories(${INCLUDE_PATH})
 
 # 08. 引用的库文件目录及文件
 set(CUDA_LIB "cublas.lib"  "cuda.lib" "cudadevrt.lib" "cudart_static.lib" "cudadevrt.lib" "cudart_static.lib")
