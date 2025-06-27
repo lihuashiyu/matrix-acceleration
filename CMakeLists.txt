@@ -3,13 +3,15 @@ set(COMPILE_TYPE  2)                                                           #
 set(EXECUTE_FILE  0)                                                           # 可执行文件
 set(STATIC_LIB    1)                                                           # 静态库
 set(DYNAMIC_LIB   2)                                                           # 动态库
+set(CUDA_VISION   75)                                                          # 70：Volta；75：Ampere；86：Hopper；89：Ada:12：Blackwell
 
 # 01. 指定 cmake 最小版本
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.20)
 
 # 02. 设置环境变量，编译用到的源文件全部都要放到这里，否则编译能够通过，但是执行的时候会出现各种问题
-set(CMAKE_CXX_STANDARD  14)
-set(CMAKE_CUDA_STANDARD 14)
+set(CMAKE_CXX_STANDARD  17)
+set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CUDA_ARCHITECTURES "${CUDA_VISION}")                                 # GPU 架构编号
 
 # 03. 指定项目的名称，一般和项目的文件夹名称对应
 project(matrix-acceleration CUDA)
