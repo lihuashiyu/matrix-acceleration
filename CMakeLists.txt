@@ -12,24 +12,25 @@ cmake_minimum_required(VERSION 3.20)
 set(CMAKE_CXX_STANDARD  17)
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_ARCHITECTURES "${CUDA_VISION}")                                 # GPU 架构编号
+# set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)                                     # 启用 CUDA 分离编译
 
 # 03. 指定项目的名称，一般和项目的文件夹名称对应
 project(matrix-acceleration CUDA)
 
 # 04. 源码文件存放目录
-file(GLOB_RECURSE  source_list    "src/*/*.cu")                                # 获取所有的头文件
-file(GLOB_RECURSE  header_list    "src/*/*.cuh")                               # 获取所有的源文件
+file(GLOB_RECURSE  source_list    "src/*.cu")                                  # 获取所有的头文件
+file(GLOB_RECURSE  header_list    "src/*.cuh")                                 # 获取所有的源文件
 set(src_list       ${source_list} ${header_list})                              # 拼接变量
 
 # 05. 设置编译类型
 if("${COMPILE_TYPE}"     STREQUAL "${STATIC_LIB}")
-    add_library(matrix-acceleration  STATIC  ${src_list})                      # 编译为静态库
+    add_library(${PROJECT_NAME}       STATIC  ${src_list})                     # 编译为静态库
 elseif("${COMPILE_TYPE}" STREQUAL "${DYNAMIC_LIB}")
-    add_library(matrix-acceleration  SHARED  ${src_list})                      # 编译为动态链接库
+    add_library("${PROJECT_NAME}"     SHARED  ${src_list})                     # 编译为动态链接库
 elseif("${COMPILE_TYPE}" STREQUAL "${EXECUTE_FILE}")
-    add_executable(matrix-acceleration "src/main.cu" "${src_list}")            # 编译为可执行程序
+    add_executable("${PROJECT_NAME}" "src/main.cu" "${src_list}")            # 编译为可执行程序
 else()
-    message(WARNING  "编译类型错误 ...... ")                                     # 编译类型错误
+    message(WARNING  "编译类型错误 ...... ")                                    # 编译类型错误
 endif()
 
 # 06. 编译输出路径的设置
@@ -47,10 +48,10 @@ include_directories(${INCLUDE_PATH})
 # 08. 引用的库文件目录及文件
 set(CUDA_LIB "cublas.lib"  "cuda.lib" "cudadevrt.lib" "cudart_static.lib" "cudadevrt.lib" "cudart_static.lib")
 link_directories(${PROJECT_SOURCE_DIR}/lib)                                    # 第三方 lib 库文件搜索路径
-target_link_libraries(matrix-acceleration ${CUDA_LIB})                         # 引入库文件到子工程
+target_link_libraries("${PROJECT_NAME}"   ${CUDA_LIB})                         # 引入库文件到子工程
 
 # 09. 设置属性
-set_target_properties(matrix-acceleration PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+set_target_properties("${PROJECT_NAME}"  PROPERTIES  CUDA_SEPARABLE_COMPILATION  ON)
 
 # 10. 子项目
 # add_subdirectory(vector)
@@ -61,11 +62,12 @@ set_target_properties(matrix-acceleration PROPERTIES CUDA_SEPARABLE_COMPILATION 
 # 11. 子项目配置
 
 # 12. 添加测试单个可执行文件
-file(GLOB_RECURSE  path_list "test/cuda/*.cu")                                # 获取所有测试文件
+file(GLOB_RECURSE  path_list "test/*/*.cu")                                    # 获取所有测试文件
 foreach(path ${path_list})
     string(REPLACE "/" ";" dir_list ${path})                                   # 按照 / 进行分割
     list(GET dir_list -1 file_name)                                            # 获取文件名称
     string(REPLACE "." ";" cache_list ${file_name})                            # 按照 . 进行分割
     list(GET cache_list 0 execute_name)                                        # 获取文件名前缀
     add_executable(${execute_name} ${path})
+    # message("${execute_name}: ${path}")
 endforeach()
