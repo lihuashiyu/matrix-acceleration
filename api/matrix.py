@@ -7,7 +7,7 @@
     FileName      ：  matrix    
     CreateTime    ：  2025-07-04 16:40:04 
     Author        ：  lihuashiyu 
-    Email         ：  lihuashiyu@qq.com 
+    Email         ：  lihuashiyu@github.com 
     PythonCompiler：  3.9.13 
     IDE           ：  CLion 2020.3.4 
     Version       ：  1.0 

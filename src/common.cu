@@ -4,7 +4,7 @@
  * FileName      ：  common 
  * CreateTime    ：  2025-07-03 16:55:43 
  * Author        ：  lihuashiyu
- * Email         ：  lihuashiyu@qq.com
+ * Email         ：  lihuashiyu@github.com
  * IDE           ：  CLion 2020.3.4 
  * Version       ：  1.0  
  * Description   ：  通用函数

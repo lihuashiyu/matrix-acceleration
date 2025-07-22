@@ -4,7 +4,7 @@
  * FileName      ：  vector
  * CreateTime    ：  2025-07-03 15:11:05
  * Author        ：  lihuashiyu
- * Email         ：  lihuashiyu@qq.com
+ * Email         ：  lihuashiyu@github.com
  * IDE           ：  CLion 2020.3.4 
  * Version       ：  1.0  
  * Description   ：  向量计算头文件
