@@ -1,4 +1,4 @@
-# bigdata-deploy
+# matrix-acceleration
 
   使用 cuda 对矩阵进行加速
 
