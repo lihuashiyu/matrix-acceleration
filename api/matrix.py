@@ -7,24 +7,19 @@
     FileName      ：  matrix    
     CreateTime    ：  2025-07-04 16:40:04 
     Author        ：  lihuashiyu 
-    Email         ：  lihuashiyu@github.com 
-    PythonCompiler：  3.9.13 
-    IDE           ：  CLion 2020.3.4 
-    Version       ：  1.0 
+    Email         ：  lihuashiyu@github.com
     Description   ：  调用 CUDA 代码编译后的 dll，提供 Python 调用接口
 ====================================================================================================
 """
 
-import os
-import sys
+from os import path
 import ctypes as cy
 import numpy as np
-from pathlib import Path
 
 
 DLL_NAME="matrix-acceleration.dll"                                             # 默认 dll 文件名
 
-def load_dll(path: str = None) -> cy.CDLL:
+def load_dll(dll_path: str = None) -> cy.CDLL:
     """
         加载指定路径的 DLL 文件，若未提供路径则尝试从项目根目录加载。
         
@@ -38,41 +33,21 @@ def load_dll(path: str = None) -> cy.CDLL:
             FileNotFoundError: 若指定路径或默认路径下未找到 DLL 文件
     """
     
-    if not path:
-        file_path = sys.path[0]                                                # 获取当前文件路径
-        project_path = Path(file_path).resolve()                               # 获取项目绝对路径
-        path = f"{project_path}/{DLL_NAME}"                                    # 获取 dll 文件路径
-    
-    # 判断 dll 文件是否存在
-    path = path.strip()
-    print(path)
-    if os.path.exists(path):
-        cuda_dll = cy.CDLL(path, winmode=0)                                    # 加载 dll 文件
+    if not dll_path:
+        file_path = path.abspath(__file__)                                     # 获取当前文件路径
+        file_dir = path.dirname(file_path)                                     # 获取当前文件目录
+        dll_path = f"{file_dir}/{DLL_NAME}"                                    # 获取 dll 文件路径
     else:
-        raise FileNotFoundError(f"{path} not found ...")                       # 未找到文件，抛出异常
+        dll_path = dll_path.strip()
+        
+    # 判断 dll 文件是否存在
+    if path.exists(dll_path):
+        cuda_dll = cy.CDLL(dll_path, winmode=0)                                # 加载 dll 文件
+    else:
+        raise FileNotFoundError(f"{dll_path} not found ...")                   # 未找到文件，抛出异常
     
     return cuda_dll
 
-
-# def vector_add(left_vector: np.ndarray, right_vector: np.ndarray, cuda_dll: cy.CDLL) -> np.ndarray:
-#     cuda_dll.vector_add.argtypes = [cy.POINTER(cy.c_int), cy.POINTER(cy.c_int), cy.POINTER(cy.c_int), cy.c_int]
-#     cuda_dll.vector_add.restype = cy.POINTER(cy.c_int)
-#
-#     length = left_vector.shape[0]
-#     # left_vector = left_vector.astype(cy.c_int)
-#     # right_vector = right_vector.astype(cy.c_int)
-#     result_vector = np.zeros(length)
-#
-#     left_vector_c = (cy.c_int * length)(*left_vector)
-#     right_vector_c = (cy.c_int * length)(*right_vector)
-#     result_vector_c = (cy.c_int * length)(*result_vector)
-#
-#     cuda_dll.vector_add(left_vector_c, right_vector_c, result_vector_c, length)
-#
-#     return result_vector_c
-#
-# import numpy as np
-# import ctypes as cy
 
 def vector_add(left_vector: np.ndarray, right_vector: np.ndarray, cuda_dll: cy.CDLL) -> np.ndarray:
     """

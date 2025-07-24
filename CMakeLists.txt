@@ -40,7 +40,7 @@ set(CMAKE_DEBUG_POSTFIX    "-debug")                                           #
 set(CMAKE_RELEASE_POSTFIX  "-release")                                         # release 构建类型的库文件后缀
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/out/lib)              # 静态库（.lib 或 .a）输出目录
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/out/dll)              # 动态库（.dll 或 .so）输出目录
-set(CMAKE_PDB_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/out/pdb)                  # 调试符号文件（.pdb）输出目录
+set(CMAKE_PDB_OUTPUT_DIRECTORY     ${PROJECT_SOURCE_DIR}/out/pdb)              # 调试符号文件（.pdb）输出目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/out/exe)              # 可执行文件（.exe 或 无扩展名）输出目录
 
 # 08. 引用的库文件目录及文件
